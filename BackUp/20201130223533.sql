@@ -186,6 +186,7 @@ CREATE TABLE `qrtz_locks` (
 
 LOCK TABLES `qrtz_locks` WRITE;
 /*!40000 ALTER TABLE `qrtz_locks` DISABLE KEYS */;
+INSERT INTO `qrtz_locks` VALUES ('quartzScheduler','TRIGGER_ACCESS');
 /*!40000 ALTER TABLE `qrtz_locks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -375,7 +376,7 @@ CREATE TABLE `tb_department` (
 
 LOCK TABLES `tb_department` WRITE;
 /*!40000 ALTER TABLE `tb_department` DISABLE KEYS */;
-INSERT INTO `tb_department` VALUES (1,'Default','000-0000000','XXX省XXX市XXX区XXX街XXX号XXX大厦','2020-11-02 14:37:11','2020-11-02 14:37:11');
+INSERT INTO `tb_department` VALUES (1,'Default','XXX-XXXXXX','XXX省XXX市XXX区XXX街XXX大厦','2020-11-30 22:27:10','2020-11-30 22:27:10');
 /*!40000 ALTER TABLE `tb_department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -390,12 +391,12 @@ CREATE TABLE `tb_logger` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '日志id',
   `user` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户名称',
   `method` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '当前操作方法',
-  `params` varchar(400) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `params` varchar(10000) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法实参',
   `operation` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT '当前操作类型',
   `description` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '当前操作描述',
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统操作日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统操作日志表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +405,39 @@ CREATE TABLE `tb_logger` (
 
 LOCK TABLES `tb_logger` WRITE;
 /*!40000 ALTER TABLE `tb_logger` DISABLE KEYS */;
+INSERT INTO `tb_logger` VALUES (1,'admin','org.project.controller.LoggerController.DeleteAll','{}','DELETE','清空所有日志','2020-11-30 22:35:29');
 /*!40000 ALTER TABLE `tb_logger` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_mail`
+--
+
+DROP TABLE IF EXISTS `tb_mail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_mail` (
+  `id` bigint NOT NULL COMMENT '邮件信息表主键',
+  `fromName` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '发件人姓名',
+  `from` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '发件人邮箱',
+  `to` varchar(50) COLLATE utf8mb4_general_ci NOT NULL COMMENT '收件人邮箱',
+  `toName` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '收件人姓名',
+  `subject` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '邮件主题',
+  `text` varchar(10000) COLLATE utf8mb4_general_ci NOT NULL COMMENT '邮件内容',
+  `scheduled` int DEFAULT '0' COMMENT '是否是定时任务, 1表示定时任务, 0表示非定时任务',
+  `schedule_time` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '定时任务时间',
+  `create_time` datetime NOT NULL COMMENT '邮件记录创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_mail`
+--
+
+LOCK TABLES `tb_mail` WRITE;
+/*!40000 ALTER TABLE `tb_mail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_mail` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -427,7 +460,7 @@ CREATE TABLE `tb_menu` (
   `modify_time` datetime NOT NULL COMMENT '权限记录修改时间',
   `status` int DEFAULT '1' COMMENT '可用状态, 0表示不可用, 1表示可用',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -436,7 +469,7 @@ CREATE TABLE `tb_menu` (
 
 LOCK TABLES `tb_menu` WRITE;
 /*!40000 ALTER TABLE `tb_menu` DISABLE KEYS */;
-INSERT INTO `tb_menu` VALUES (1,0,'系统管理','','','el-icon-setting',0,1,'2020-10-12 19:45:10','2020-10-12 19:45:10',1),(2,0,'开发管理','','','el-icon-document',0,2,'2020-11-21 15:46:39','2020-11-21 15:46:55',1),(3,0,'运维管理','','','el-icon-s-claim',0,3,'2020-10-12 19:45:10','2020-11-21 15:47:01',1),(4,0,'基本功能','','','el-icon-s-tools',0,4,'2020-11-21 15:46:15','2020-11-21 15:46:15',1),(5,0,'组件管理','','','el-icon-coin',0,5,'2020-10-12 19:45:10','2020-11-21 15:47:44',1),(6,0,'多级菜单','','','el-icon-circle-plus-outline',0,10,'2020-10-12 19:45:10','2020-11-21 15:47:50',1),(7,1,'用户管理','/user','','el-icon-user',0,1,'2020-10-12 19:51:14','2020-10-23 17:31:54',1),(8,1,'部门管理','/department','','el-icon-tickets',0,2,'2020-10-12 19:51:14','2020-10-21 18:16:12',1),(9,1,'权限管理','/authority','','el-icon-s-custom',0,3,'2020-10-12 19:51:14','2020-10-23 17:17:44',1),(10,1,'角色管理','/role','','el-icon-user-solid',0,4,'2020-10-12 19:51:14','2020-10-23 16:48:52',1),(11,2,'MySQL监控','/SQL','','el-icon-loading',0,1,'2020-10-12 19:56:56','2020-11-21 15:48:30',1),(12,2,'Redis监控','/redis','','el-icon-view',0,2,'2020-10-12 19:56:56','2020-11-21 15:48:37',1),(13,2,'Swagger文档','/swagger','','el-icon-document',0,3,'2020-10-12 19:56:56','2020-11-21 15:48:43',1),(14,2,'Knife4j文档','/knife4j','','el-icon-document-checked',0,4,'2020-10-12 19:56:56','2020-11-21 15:48:49',1),(15,2,'Actuator监控','/actuator','','el-icon-document-checked',0,8,'2020-11-18 19:48:14','2020-11-21 15:48:58',1),(16,3,'系统备份','/backup','','el-icon-paperclip',0,1,'2020-10-12 19:56:56','2020-11-21 15:53:51',1),(17,3,'操作日志','/logger','','el-icon-document',0,2,'2020-10-30 18:33:08','2020-11-21 15:53:59',1),(18,3,'附件管理','/attachment','','el-icon-picture-outline',0,3,'2020-10-31 16:18:06','2020-11-21 15:54:03',1),(19,3,'定时任务','/job','','el-icon-alarm-clock',0,4,'2020-11-20 16:34:23','2020-11-21 15:54:09',1),(20,4,'邮件管理','/mail','','el-icon-postcard',0,1,'2020-11-21 15:53:27','2020-11-21 15:54:26',1),(21,5,'Echarts 图表库','/chart','','el-icon-date',0,1,'2020-10-12 19:58:38','2020-10-21 18:17:11',1),(22,5,'Element 图标库','/icon','','el-icon-picture',0,2,'2020-10-12 19:58:38','2020-10-21 18:17:15',1),(23,6,'二级菜单1','/menu','','el-icon-circle-plus-outline',0,1,'2020-10-12 20:00:22','2020-10-12 20:00:22',1),(24,6,'二级菜单2','/menu','','el-icon-circle-plus-outline',0,2,'2020-10-12 20:00:22','2020-10-12 20:00:22',1),(25,7,'添加用户','','user:add','el-icon-plus',1,1,'2020-10-21 17:57:16','2020-10-21 18:00:29',1),(26,7,'下载记录','','user:download','el-icon-download',1,2,'2020-10-21 17:58:02','2020-10-21 18:00:33',1),(27,7,'修改用户','','user:update','el-icon-edit',1,3,'2020-10-21 17:58:50','2020-10-21 18:00:38',1),(28,7,'删除用户','','user:delete','el-icon-delete',1,4,'2020-10-21 17:59:22','2020-10-23 17:25:55',1),(29,7,'配置用户','','user:config','el-icon-s-tools',1,5,'2020-10-21 18:00:00','2020-10-23 17:25:59',1),(30,8,'添加部门','','dept:add','el-icon-plus',1,1,'2020-10-21 18:03:30','2020-10-21 18:03:30',1),(31,8,'下载记录','','dept:download','el-icon-download',1,2,'2020-10-21 18:04:08','2020-10-21 18:04:08',1),(32,8,'修改部门','','dept:update','el-icon-edit',1,3,'2020-10-21 18:06:30','2020-10-21 18:06:30',1),(33,8,'删除部门','','dept:delete','el-icon-delete',1,4,'2020-10-21 18:06:58','2020-10-21 18:06:58',1),(34,9,'添加权限','','menu:add','el-icon-plus',1,1,'2020-10-21 18:12:59','2020-10-21 18:12:59',1),(35,9,'下载记录','','menu:download','el-icon-download',1,2,'2020-10-21 18:14:03','2020-10-21 18:14:03',1),(36,9,'修改权限','','menu:update','el-icon-edit',1,3,'2020-10-21 18:15:03','2020-10-21 18:15:03',1),(37,9,'删除权限','','menu:delete','el-icon-delete',1,4,'2020-10-21 18:15:31','2020-10-21 18:15:31',1),(38,10,'添加角色','','role:add','el-icon-plus',1,1,'2020-10-21 18:08:39','2020-10-21 18:08:39',1),(39,10,'下载记录','','role:download','el-icon-download',1,2,'2020-10-21 18:09:07','2020-10-21 18:09:07',1),(40,10,'修改角色','','role:update','el-icon-edit',1,3,'2020-10-21 18:11:23','2020-10-21 18:11:23',1),(41,10,'删除角色','','role:delete','el-icon-delete',1,4,'2020-10-21 18:11:43','2020-10-21 18:11:43',1),(42,10,'配置角色','','role:config','el-icon-s-tools',1,5,'2020-10-21 18:12:11','2020-10-21 18:12:11',1),(43,12,'删除缓存','','cache:delete','el-icon-delete',1,1,'2020-11-20 20:59:56','2020-11-20 20:59:56',1),(44,12,'修改缓存','','cache:update','el-icon-edit',1,2,'2020-11-20 21:00:26','2020-11-20 21:00:26',1),(45,16,'备份数据','','backup:backup','el-icon-document-copy',1,1,'2020-10-29 19:51:17','2020-10-29 19:51:17',1),(46,16,'下载备份','','backup:download','el-icon-download',1,2,'2020-10-29 19:52:11','2020-10-29 19:52:11',1),(47,16,'还原备份','','backup:rollback','el-icon-refresh-left',1,3,'2020-10-29 19:52:45','2020-10-29 19:53:30',1),(48,16,'删除备份','','backup:delete','el-icon-delete',1,4,'2020-10-29 19:53:15','2020-10-29 19:53:15',1),(49,17,'清空日志','','logger:truncate','el-icon-delete',1,1,'2020-11-01 16:08:57','2020-11-01 16:08:57',1),(50,17,'下载文档','','logger:download','el-icon-download',1,2,'2020-11-01 16:10:00','2020-11-01 16:10:00',1),(51,18,'下载附件','','attachment:download','el-icon-download',1,1,'2020-11-01 16:11:32','2020-11-01 16:11:32',1),(52,18,'删除附件','','attachment:delete','el-icon-delete',1,2,'2020-11-01 16:12:05','2020-11-02 15:16:35',1),(53,19,'添加任务','','job:add','el-icon-plus',1,1,'2020-11-20 20:53:31','2020-11-20 20:53:31',1),(54,19,'修改任务','','job:update','el-icon-edit',1,2,'2020-11-20 20:54:34','2020-11-20 20:54:34',1),(55,19,'执行任务','','job:exe','el-icon-caret-right',1,3,'2020-11-20 20:55:13','2020-11-20 20:55:13',1),(56,19,'暂停任务','','job:pause','el-icon-circle-close',1,4,'2020-11-20 20:55:37','2020-11-20 20:55:37',1),(57,19,'继续任务','','job:resume','el-icon-refresh-right',1,5,'2020-11-20 20:56:08','2020-11-20 20:56:08',1),(58,19,'删除任务','','job:remove','el-icon-delete',1,6,'2020-11-20 20:56:33','2020-11-20 20:56:33',1);
+INSERT INTO `tb_menu` VALUES (1,0,'系统管理','','','el-icon-setting',0,1,'2020-10-12 19:45:10','2020-10-12 19:45:10',1),(2,0,'开发管理','','','el-icon-document',0,2,'2020-11-21 15:46:39','2020-11-21 15:46:55',1),(3,0,'运维管理','','','el-icon-s-claim',0,3,'2020-10-12 19:45:10','2020-11-21 15:47:01',1),(4,0,'基本功能','','','el-icon-s-tools',0,4,'2020-11-21 15:46:15','2020-11-21 15:46:15',1),(5,0,'组件管理','','','el-icon-coin',0,5,'2020-10-12 19:45:10','2020-11-21 15:47:44',1),(6,0,'多级菜单','','','el-icon-circle-plus-outline',0,10,'2020-10-12 19:45:10','2020-11-21 15:47:50',1),(7,1,'用户管理','/user','','el-icon-user',0,1,'2020-10-12 19:51:14','2020-10-23 17:31:54',1),(8,1,'部门管理','/department','','el-icon-tickets',0,2,'2020-10-12 19:51:14','2020-10-21 18:16:12',1),(9,1,'权限管理','/authority','','el-icon-s-custom',0,3,'2020-10-12 19:51:14','2020-10-23 17:17:44',1),(10,1,'角色管理','/role','','el-icon-user-solid',0,4,'2020-10-12 19:51:14','2020-10-23 16:48:52',1),(11,2,'MySQL监控','/SQL','','el-icon-loading',0,1,'2020-10-12 19:56:56','2020-11-21 15:48:30',1),(12,2,'Redis监控','/redis','','el-icon-view',0,2,'2020-10-12 19:56:56','2020-11-21 15:48:37',1),(13,2,'Swagger文档','/swagger','','el-icon-document',0,3,'2020-10-12 19:56:56','2020-11-21 15:48:43',1),(14,2,'Knife4j文档','/knife4j','','el-icon-document-checked',0,4,'2020-10-12 19:56:56','2020-11-21 15:48:49',1),(15,2,'Actuator监控','/actuator','','el-icon-document-checked',0,8,'2020-11-18 19:48:14','2020-11-21 15:48:58',1),(16,3,'系统备份','/backup','','el-icon-paperclip',0,1,'2020-10-12 19:56:56','2020-11-21 15:53:51',1),(17,3,'操作日志','/logger','','el-icon-document',0,2,'2020-10-30 18:33:08','2020-11-21 15:53:59',1),(18,3,'附件管理','/attachment','','el-icon-picture-outline',0,3,'2020-10-31 16:18:06','2020-11-21 15:54:03',1),(19,3,'定时任务','/job','','el-icon-alarm-clock',0,4,'2020-11-20 16:34:23','2020-11-21 15:54:09',1),(20,4,'邮件管理','/mail','','el-icon-postcard',0,1,'2020-11-21 15:53:27','2020-11-21 15:54:26',1),(21,5,'Echarts 图表库','/chart','','el-icon-date',0,1,'2020-10-12 19:58:38','2020-10-21 18:17:11',1),(22,5,'Element 图标库','/icon','','el-icon-picture',0,2,'2020-10-12 19:58:38','2020-10-21 18:17:15',1),(23,6,'二级菜单1','/menu','','el-icon-circle-plus-outline',0,1,'2020-10-12 20:00:22','2020-10-12 20:00:22',1),(24,6,'二级菜单2','/menu','','el-icon-circle-plus-outline',0,2,'2020-10-12 20:00:22','2020-10-12 20:00:22',1),(25,7,'添加用户','','user:add','el-icon-plus',1,1,'2020-10-21 17:57:16','2020-10-21 18:00:29',1),(26,7,'下载记录','','user:download','el-icon-download',1,2,'2020-10-21 17:58:02','2020-10-21 18:00:33',1),(27,7,'修改用户','','user:update','el-icon-edit',1,3,'2020-10-21 17:58:50','2020-10-21 18:00:38',1),(28,7,'删除用户','','user:delete','el-icon-delete',1,4,'2020-10-21 17:59:22','2020-10-23 17:25:55',1),(29,7,'配置用户','','user:config','el-icon-s-tools',1,5,'2020-10-21 18:00:00','2020-10-23 17:25:59',1),(30,8,'添加部门','','dept:add','el-icon-plus',1,1,'2020-10-21 18:03:30','2020-10-21 18:03:30',1),(31,8,'下载记录','','dept:download','el-icon-download',1,2,'2020-10-21 18:04:08','2020-10-21 18:04:08',1),(32,8,'修改部门','','dept:update','el-icon-edit',1,3,'2020-10-21 18:06:30','2020-10-21 18:06:30',1),(33,8,'删除部门','','dept:delete','el-icon-delete',1,4,'2020-10-21 18:06:58','2020-10-21 18:06:58',1),(34,9,'添加权限','','menu:add','el-icon-plus',1,1,'2020-10-21 18:12:59','2020-10-21 18:12:59',1),(35,9,'下载记录','','menu:download','el-icon-download',1,2,'2020-10-21 18:14:03','2020-10-21 18:14:03',1),(36,9,'修改权限','','menu:update','el-icon-edit',1,3,'2020-10-21 18:15:03','2020-10-21 18:15:03',1),(37,9,'删除权限','','menu:delete','el-icon-delete',1,4,'2020-10-21 18:15:31','2020-10-21 18:15:31',1),(38,10,'添加角色','','role:add','el-icon-plus',1,1,'2020-10-21 18:08:39','2020-10-21 18:08:39',1),(39,10,'下载记录','','role:download','el-icon-download',1,2,'2020-10-21 18:09:07','2020-10-21 18:09:07',1),(40,10,'修改角色','','role:update','el-icon-edit',1,3,'2020-10-21 18:11:23','2020-10-21 18:11:23',1),(41,10,'删除角色','','role:delete','el-icon-delete',1,4,'2020-10-21 18:11:43','2020-10-21 18:11:43',1),(42,10,'配置角色','','role:config','el-icon-s-tools',1,5,'2020-10-21 18:12:11','2020-10-21 18:12:11',1),(43,12,'删除缓存','','cache:delete','el-icon-delete',1,1,'2020-11-20 20:59:56','2020-11-20 20:59:56',1),(44,12,'修改缓存','','cache:update','el-icon-edit',1,2,'2020-11-20 21:00:26','2020-11-20 21:00:26',1),(45,16,'备份数据','','backup:backup','el-icon-document-copy',1,1,'2020-10-29 19:51:17','2020-10-29 19:51:17',1),(46,16,'下载备份','','backup:download','el-icon-download',1,2,'2020-10-29 19:52:11','2020-10-29 19:52:11',1),(47,16,'还原备份','','backup:rollback','el-icon-refresh-left',1,3,'2020-10-29 19:52:45','2020-10-29 19:53:30',1),(48,16,'删除备份','','backup:delete','el-icon-delete',1,4,'2020-10-29 19:53:15','2020-10-29 19:53:15',1),(49,17,'清空日志','','logger:truncate','el-icon-delete',1,1,'2020-11-01 16:08:57','2020-11-01 16:08:57',1),(50,17,'下载文档','','logger:download','el-icon-download',1,2,'2020-11-01 16:10:00','2020-11-01 16:10:00',1),(51,18,'下载附件','','attachment:download','el-icon-download',1,1,'2020-11-01 16:11:32','2020-11-01 16:11:32',1),(52,18,'删除附件','','attachment:delete','el-icon-delete',1,2,'2020-11-01 16:12:05','2020-11-02 15:16:35',1),(53,19,'添加任务','','job:add','el-icon-plus',1,1,'2020-11-20 20:53:31','2020-11-20 20:53:31',1),(54,19,'修改任务','','job:update','el-icon-edit',1,2,'2020-11-20 20:54:34','2020-11-20 20:54:34',1),(55,19,'执行任务','','job:exe','el-icon-caret-right',1,3,'2020-11-20 20:55:13','2020-11-20 20:55:13',1),(56,19,'暂停任务','','job:pause','el-icon-circle-close',1,4,'2020-11-20 20:55:37','2020-11-20 20:55:37',1),(57,19,'继续任务','','job:resume','el-icon-refresh-right',1,5,'2020-11-20 20:56:08','2020-11-20 20:56:08',1),(58,19,'删除任务','','job:remove','el-icon-delete',1,6,'2020-11-20 20:56:33','2020-11-20 20:56:33',1),(59,20,'发送邮件','','mail:add','el-icon-plus',1,1,'2020-11-30 22:18:19','2020-11-30 22:18:40',1),(60,20,'下载邮件','','mail:download','el-icon-download',1,2,'2020-11-30 22:19:32','2020-11-30 22:19:32',1),(61,20,'查看邮件','','mail:view','el-icon-view',1,3,'2020-11-30 22:20:56','2020-11-30 22:20:56',1),(62,20,'删除邮件','','mail:delete','el-icon-delete',1,4,'2020-11-30 22:21:48','2020-11-30 22:21:48',1);
 /*!40000 ALTER TABLE `tb_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -561,4 +594,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-21 19:26:49
+-- Dump completed on 2020-11-30 22:35:33
